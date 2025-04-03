@@ -1,12 +1,22 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 //import { useNavigate } from "react-router-dom";
 import Carousel from "../components/Carousel";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import NavBar from "../components/NavBar";
+import { useEffect } from "react";
+import { getProducts } from "../redux/productSlice";
 
 const Home = () => {
     //const navigate = useNavigate();
+    const dispatch = useDispatch();
     const {user} = useSelector((state) => state.auth);
+    const {products} = useSelector((state) => state.products);
+
+useEffect(() => {
+  dispatch(getProducts());
+}, [dispatch]);
+
 
     /*const handleButtonClick = () => {
         if (user) {
@@ -17,6 +27,8 @@ const Home = () => {
     }*/
 
   return (
+    // Página de inicio
+    
     <div className="relative h-screen w-full">
       {/* Imagen de fondo con efecto Parallax */}
       <div className="absolute inset-0 bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/images/tienda-fondo.jpg')" }} />
@@ -25,6 +37,7 @@ const Home = () => {
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Contenido principal */}
+      <NavBar />
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white text-center">
         {/* Slogan con animación */}
         <motion.h1
@@ -53,7 +66,7 @@ const Home = () => {
 
       {/* Carrusel de productos destacados */}
       <div className="relative z-10 mt-10">
-        <Carousel />
+        <Carousel products={products}/>
       </div>
     </div>
   )

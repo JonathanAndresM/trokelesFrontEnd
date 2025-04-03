@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -21,16 +21,18 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await dispatch(loginUser(userData));
+        dispatch(loginUser(userData));
+    };
 
+    useEffect(() => {
         if (user?.role) {
-            if (user.role === "admin" || user.role === "editor") {
+            if (user.role === "admin") {
                 navigate("/dashboard");
             } else {
-                navigate("/products");
+                navigate("/home");
             }
         }
-    };
+    }, [user, navigate]);
 
     return (
         <div className="flex flex-col items-center mt-20">

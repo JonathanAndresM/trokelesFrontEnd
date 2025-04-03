@@ -1,9 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const API_URL = "http://localhost:8080/api/auth";
+
+const storeUser = localStorage.getItem("user");
+const storeToken = localStorage.getItem("token");
+
 // Estado inicial
 const initialState = {
-    user: JSON.parse(localStorage.getItem("user")) || null,
+    user: storeUser ? JSON.parse(storeUser) : null,
+    token: storeToken || null,
     loading: false,
     error: null,
 };
@@ -11,27 +17,20 @@ const initialState = {
 // Accion para iniciar sesión
 export const loginUser = createAsyncThunk("auth/loginUser", async (data, { rejectWithValue }) => {
     try {
-        const res = await axios.post("http://localhost:8080/api/auth/login", data);
-        localStorage.setItem("user", JSON.stringify(res.data));
-        console.log(res.data);
-        return res.data;
+        const res = await axios.post(API_URL+"/login", data);
+        const { user, token } = res.data;
+
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+
+        console.log(res);
+        
+        return { user, token };
     } catch (error) {
         console.error("Error en login:", error.response ? error.response.data : error);
         return rejectWithValue(error.response?.data?.message || "Error desconocido");
     }
 });
-/*export const loginUser = createAsyncThunk('auth/loginUser', async (userData) => {
-    const response = await axios.post('http://localhost:8080/api/auth/login', userData);
-    const { user, token } = response.data;
-    
-    // Verifica que los datos recibidos sean correctos
-    if (user && token) {
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token', token);
-    }
-    
-    return { user, token };  // Regresa tanto el usuario como el token
-});*/
 
 // Accion para el registro
 export const registerUser = createAsyncThunk("auth/registerUser", async (userData, { rejectWithValue }) => {
@@ -45,6 +44,7 @@ export const registerUser = createAsyncThunk("auth/registerUser", async (userDat
 // Accion para cerrar sesión
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     return null;
 });
 
@@ -61,7 +61,8 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                state.user = action.payload;
+                state.user = action.payload.user;
+                state.token = action.payload.token;
                 state.loading = false;
                 state.error = null;
             })
@@ -85,6 +86,7 @@ const authSlice = createSlice({
             // Logout
             .addCase(logoutUser.fulfilled, (state) => {
                 state.user = null;
+                state.token = null;
             });
     },
 });

@@ -13,11 +13,16 @@ import { Slide, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import PageTransition from './components/PageTransition'
 import { Navigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useSelector } from 'react-redux'
+import Product from './pages/Product'
 
 const ProtectedRoute = ({ children }) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const {token, loading} = useSelector((state) => state.auth);
+
+    if (loading) return <p>Cargando...</p>;
     
-    if (!user?.token) {
+    if (!token) {
         return <Navigate to="/login" replace />;
     }
 
@@ -35,6 +40,7 @@ function App() {
           <Route path="/" element={<PageTransition><Home /></PageTransition>} />
           <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
           <Route path="/products" element={<PageTransition><Products /></PageTransition>} />
+          <Route path="/product/:id" element={<PageTransition><Product /></PageTransition>} />
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
           <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
           {/* Panel de Administración */}
@@ -47,5 +53,9 @@ function App() {
     </>
   )
 }
+
+ProtectedRoute.propTypes = {
+    children: PropTypes.node.isRequired,
+};
 
 export default App

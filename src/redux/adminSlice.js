@@ -1,18 +1,22 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import api from "../assets/interceptor";
+import axios from "axios";
+//import api from "../assets/interceptor";
 
 const API_URL = "http://localhost:8080/api/admin";
-const user = JSON.parse(localStorage.getItem("user"));
+const token = localStorage.getItem("token");
 const config = {
   headers: {
-    Authorization: `Bearer ${user?.token}` // Aquí extraes solo el token
+    Authorization: `Bearer ${token}` // Aquí extraes solo el token
   }
 };
+
+console.log(config);
+
 
 // Obtener todos los usuarios
 export const getUsers = createAsyncThunk("admin/getUsers", async (_, {rejectWithValue}) => {
     try {
-        const res = await api.get(`${API_URL}/users`, config);
+        const res = await axios.get(`${API_URL}/users`, config);
         return res.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -22,7 +26,7 @@ export const getUsers = createAsyncThunk("admin/getUsers", async (_, {rejectWith
 // Crear un nuevo usuario
 export const createUser = createAsyncThunk("admin/createUser", async (userData, {rejectWithValue}) => {
     try {
-        const res = await api.post(`${API_URL}/users`, userData, config);
+        const res = await axios.post(`${API_URL}/users`, userData, config);
         return res.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -32,7 +36,7 @@ export const createUser = createAsyncThunk("admin/createUser", async (userData, 
 // Actualizar un usuario
 export const updateUser = createAsyncThunk("admin/updateUser", async (userData, {rejectWithValue}) => {
     try {
-        const res = await api.put(`${API_URL}/users/${userData.id}`, userData, config);
+        const res = await axios.put(`${API_URL}/users/${userData.id}`, userData, config);
         return res.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -42,7 +46,7 @@ export const updateUser = createAsyncThunk("admin/updateUser", async (userData, 
 // Eliminar un usuario
 export const deleteUser = createAsyncThunk("admin/deleteUser", async (userId, {rejectWithValue}) => {
     try {
-        await api.delete(`${API_URL}/users/${userId}`, config);
+        await axios.delete(`${API_URL}/users/${userId}`, config);
         return userId;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -50,9 +54,9 @@ export const deleteUser = createAsyncThunk("admin/deleteUser", async (userId, {r
 });
 
 // Obtener todos los productos
-export const getProducts = createAsyncThunk("admin/getProducts", async (_, {rejectWithValue}) => {
+/*export const getProducts = createAsyncThunk("admin/getProducts", async (_, {rejectWithValue}) => {
     try {
-        const res = await api.get(`${API_URL}/products`, config);
+        const res = await axios.get(`${API_URL}/products`, config);
         
         return res.data;
     } catch (error) {
@@ -63,7 +67,7 @@ export const getProducts = createAsyncThunk("admin/getProducts", async (_, {reje
 // Crear un nuevo producto
 export const createProduct = createAsyncThunk("admin/createProduct", async (productData, {rejectWithValue}) => {
     try {
-        const res = await api.post(`${API_URL}/products`, productData, config);
+        const res = await axios.post(`${API_URL}/products`, productData, config);
         return res.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -73,7 +77,7 @@ export const createProduct = createAsyncThunk("admin/createProduct", async (prod
 // Actualizar un producto
 export const updateProduct = createAsyncThunk("admin/updateProduct", async (productData, {rejectWithValue}) => {
     try {
-        const res = await api.put(`${API_URL}/products/${productData.id}`, productData, config);
+        const res = await axios.put(`${API_URL}/products/${productData.id}`, productData, config);
         return res.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -83,12 +87,12 @@ export const updateProduct = createAsyncThunk("admin/updateProduct", async (prod
 // Eliminar un producto
 export const deleteProduct = createAsyncThunk("admin/deleteProduct", async (productId, {rejectWithValue}) => {
     try {
-        await api.delete(`${API_URL}/products/${productId}`, config);
+        await axios.delete(`${API_URL}/products/${productId}`, config);
         return productId;
     } catch (error) {
         return rejectWithValue(error.response.data);
     }
-});
+});*/
 
 // Slice de administración
 const adminSlice = createSlice({
@@ -159,7 +163,7 @@ const adminSlice = createSlice({
                 state.error = action.payload;
             })
             // Obtener productos
-            .addCase(getProducts.pending, (state) => {
+            /*.addCase(getProducts.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
@@ -213,7 +217,7 @@ const adminSlice = createSlice({
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            });*/
     },
 });
 

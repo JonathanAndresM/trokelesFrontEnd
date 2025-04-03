@@ -1,34 +1,11 @@
-/*import { Link } from "react-router-dom"
-import { useSelector } from "react-redux"
-
-const Dashboard = () => {
-    const {user} = useSelector((state) => state.auth)
-
-  return (
-    <div className="min-h-screen p-6">
-        <h1 className="text-3xl font-bold mb-6">Panel de Administración</h1>
-        <nav className="space-x-4">
-            <Link className="px-4 py-2 bg-blue-500 text-white rounded" to="/dashboard/products">Productos</Link>
-            {user.role === "admin" && (
-            <Link className="px-4 py-2 bg-blue-500 text-white rounded" to="/dashboard/users">Usuarios</Link>
-            )}
-            {(user.role === "admin" || user.role === "viewer") && (
-            <Link className="px-4 py-2 bg-blue-500 text-white rounded" to="/dashboard/reports">Reportes</Link>
-            )}
-        </nav>
-        </div>
-  )
-}
-
-export default Dashboard*/
-
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import NavBar from '../../components/NavBar';
 
 const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
+      <NavBar />
       <motion.div
         className="max-w-7xl mx-auto"
         initial={{ opacity: 0 }}
